@@ -162,7 +162,7 @@ const App = () => {
         handleChangeModelValue={handleChangeModelValue}
       />
       <div style={{ position: 'fixed', bottom: 20, right: 30, width: 50, height: 30 }}>
-        <a href="/#">GITHUB</a>
+        <a href="https://github.com/geewoo94/generate-mock-data">GITHUB</a>
       </div>
     </div>
   );
