@@ -34,7 +34,7 @@ const Models = (
     handleChangeModelValue: (id: string, value: string) => void,
   }) => {
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', width: 500 }}>
+    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', width: 500, zIndex: 1 }}>
       <button type="button" onClick={handleAddModel} style={{ width: 200, height: 50 }}>Add Model</button>
       {models.map(model => {
         return (
@@ -143,7 +143,7 @@ const App = () => {
   };
 
   return (
-    <div className="App" style={{ display: 'flex' }}>
+    <div className="App" style={{ display: 'flex', justifyContent: 'center' }}>
       <div>
         <JSONEditor
           value={json.value}
