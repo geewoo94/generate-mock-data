@@ -1,5 +1,6 @@
 {
   "name": "generate-mock-data2",
+  "homepage": "https://geewoo94.github.io/generate-mock-data/",
   "version": "0.1.0",
   "private": true,
   "dependencies": {
