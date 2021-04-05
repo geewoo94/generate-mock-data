@@ -1,4 +1,5 @@
 # Mock data 생성기
+[Demo Page](https://geewoo94.github.io/generate-mock-data/)
 
 ## 사용법
 - JSON field에 원하는 json을 입력.
