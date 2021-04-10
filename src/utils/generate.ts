@@ -13,7 +13,7 @@ const makeRandomDate = (n = -7) => {
   );
 };
 
-export const generate = (json: Model, models: Model[]) => {
+export const generate = (json: Model, models: Model[] = []) => {
   const parsers = [
     {
       name: 'RANDOM_STRING',
