@@ -1,25 +1,31 @@
 import { nanoid } from 'nanoid';
-import dayjs from 'dayjs';
 
 import { Model } from '../type';
+
+const makeRandomString = (val = 12) => nanoid(val);
+const makeRandomNumber = (val = 10) => Math.floor(Math.random() * val);
+const makeRandomDate = (n = -7) => {
+  const currentTime = new Date().getTime();
+  const prevNthTime = new Date().getTime() - 1000 * 60 * 60 * 24 * -n;
+
+  return new Date(
+    prevNthTime + Math.random() * (currentTime - prevNthTime)
+  );
+};
 
 export const generate = (json: Model, models: Model[]) => {
   const parsers = [
     {
       name: 'RANDOM_STRING',
-      callback: (value: number = 12) => `"${nanoid(value)}"`,
+      callback: (val: number = 12) => `"${makeRandomString(val)}"`,
     },
     {
       name: 'RANDOM_NUMBER',
-      callback: (value: number = 10) => `${Math.floor(Math.random() * value)}`,
+      callback: (val: number = 10) => `${makeRandomNumber(val)}`,
     },
     {
       name: 'RANDOM_DATE',
-      callback: (value: number = -7) => {
-        const currentDate = dayjs().toDate().getTime();
-        const prevSevenDate = dayjs().date(value).toDate().getTime();
-        return `"${(new Date(prevSevenDate + Math.random() * (currentDate - prevSevenDate))).toISOString()}"`;
-      }
+      callback: (n: number = -7) => `"${makeRandomDate(n).toISOString()}"`,
     }
   ];
 
@@ -27,21 +33,15 @@ export const generate = (json: Model, models: Model[]) => {
     parsers.push({
       name: model.name,
       callback: (value: number = 0) => {
-        if (value === 0) {
-          return parse(model);
-        }
+        if (value === 0) return parse(model);
 
         let result = '';
 
         for (let i = 0; i < value; i++) {
-          if (i === 0) result += '[';
-
-          result += parse(model);
-          if (i < value - 1) result += ',';
-          if (i === value - 1) result += ']';
+          result += parse(model) + (i < value - 1 ? ',' : '');
         }
 
-        return result;
+        return '[' + result + ']';
       }
     })
   });
