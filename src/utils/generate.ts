@@ -13,6 +13,25 @@ const makeRandomDate = (n = -7) => {
   );
 };
 
+export const interpolateParentheses = (
+  target: string,
+  key: string,
+  callback: (val?: number) => any
+) => {
+  const regexObject = new RegExp(`${key}\\(\\)`, 'g');
+  const regexArray = new RegExp(`${key}\\((\\-?\\d+)\\)`, 'g');
+
+  if (regexObject.test(target)) {
+    return target.replace(regexObject, callback());
+  }
+
+  if (regexArray.test(target)) {
+    return target.replace(regexArray, (_, $1) => callback($1));
+  }
+
+  return target;
+};
+
 export const generate = (json: Model, models: Model[] = []) => {
   const parsers = [
     {
@@ -29,22 +48,22 @@ export const generate = (json: Model, models: Model[] = []) => {
     }
   ];
 
-  models.forEach((model) => {
+  for (const model of models) {
     parsers.push({
       name: model.name,
-      callback: (value: number = 0) => {
-        if (value === 0) return parse(model);
+      callback: (val?: number) => {
+        if (!val) return parse(model);
 
-        let result = '';
+        let result = [];
 
-        for (let i = 0; i < value; i++) {
-          result += parse(model) + (i < value - 1 ? ',' : '');
+        for (let i = 0; i < val; i++) {
+          result.push(parse(model));
         }
 
-        return '[' + result + ']';
-      }
-    })
-  });
+        return '[' + result.join(',') + ']';
+      },
+    });
+  }
 
   return parse(json);
 
@@ -53,20 +72,7 @@ export const generate = (json: Model, models: Model[] = []) => {
 
     for (let i = 0; i < parsers.length; i++) {
       const parser = parsers[i];
-      const regexArray = new RegExp(`${parser.name}\\((\\-?\\d+)\\)`, 'g');
-      const regexObject = new RegExp(`${parser.name}\\(\\)`, 'g');
-
-      if (regexObject.test(model.value)) {
-        result = result.replace(regexObject, () => {
-          return parser.callback();
-        })
-      }
-
-      if (regexArray.test(model.value)) {
-        result = result.replace(regexArray, (_, p1: string) => {
-          return parser.callback(Number(p1));
-        });
-      }
+      result = interpolateParentheses(result, parser.name, parser.callback);
     }
 
     return result;
